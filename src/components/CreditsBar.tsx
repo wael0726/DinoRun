@@ -10,7 +10,7 @@ import { Star } from "lucide-react";
 export function CreditsBar() {
   // GitHub repository URL (used for the Star button)
   const repoUrl: string =
-    "https://github.com/C-W-D-Harshit/better-chrome-dino-runner";
+    "https://github.com/wael0726/DinoRun";
   // Author profile URL (X/Twitter)
   const authorUrl: string = "https://github.com/wael0726";
 

@@ -44,6 +44,26 @@ export function GameCanvas({
 
   // Preload the cactus SVG once. We'll tint it on an offscreen canvas to avoid
   // touching the main canvas compositing state.
+
+  // Ajoute ces refs en haut
+  const hamImageRef = useRef<HTMLImageElement | null>(null);
+  const hamImageLoadedRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.decoding = "async";
+    img.crossOrigin = "anonymous";
+    img.src = "/coin2.png";
+    img.onload = () => {
+      hamImageRef.current = img;
+      hamImageLoadedRef.current = true;
+    };
+    img.onerror = () => {
+      hamImageLoadedRef.current = false;
+    };
+  }, []);
+
+
   useEffect(() => {
     const img = new Image();
     img.decoding = "async";
@@ -499,30 +519,34 @@ export function GameCanvas({
     // Coins with slight glow
     for (const coin of coins) {
       drawShadow(coin.x, groundY + 2, coin.radius * 0.8, 3);
-      ctx.save();
-      ctx.fillStyle = accent;
-      ctx.strokeStyle = fg;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(coin.x, coin.y, coin.radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 0.25;
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-      // highlight
-      ctx.beginPath();
-      ctx.strokeStyle = "#ffffff";
-      ctx.globalAlpha = 0.3;
-      ctx.arc(
-        coin.x - coin.radius * 0.3,
-        coin.y - coin.radius * 0.3,
-        coin.radius * 0.6,
-        Math.PI * 0.9,
-        Math.PI * 1.8
-      );
-      ctx.stroke();
-      ctx.restore();
+
+      const img = hamImageRef.current;
+      const ready =
+        hamImageLoadedRef.current &&
+        img !== null &&
+        img.complete &&
+        img.naturalWidth > 0 &&
+        img.naturalHeight > 0;
+
+      if (ready) {
+        const size = 32;
+        ctx.drawImage(
+          img as HTMLImageElement,
+          coin.x - size / 2,
+          coin.y - size / 2,
+          size,
+          size
+        );
+      } else {
+        ctx.save();
+        ctx.fillStyle = accent;
+        ctx.beginPath();
+        ctx.arc(coin.x, coin.y, coin.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
     }
+
 
     // HUD is rendered in DOM overlay for crisp UI
   }, [
