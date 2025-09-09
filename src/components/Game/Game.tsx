@@ -521,7 +521,7 @@ export function Game() {
         <div className="mb-2 sm:mb-3 flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-primary" aria-hidden />
           <h1 className="text-xs sm:text-sm md:text-base font-semibold text-foreground select-none">
-            Dino Run
+            Dino Runner
           </h1>
         </div>
         <div className="relative">
